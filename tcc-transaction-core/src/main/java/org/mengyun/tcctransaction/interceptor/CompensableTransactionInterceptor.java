@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
+ * 方法执行拦截器
  * Created by changmingxie on 10/30/15.
  */
 public class CompensableTransactionInterceptor {
@@ -38,6 +39,7 @@ public class CompensableTransactionInterceptor {
 
     public Object interceptCompensableMethod(ProceedingJoinPoint pjp) throws Throwable {
 
+        //创建注解方法上下文
         CompensableMethodContext compensableMethodContext = new CompensableMethodContext(pjp);
 
         boolean isTransactionActive = transactionManager.isTransactionActive();
@@ -48,8 +50,10 @@ public class CompensableTransactionInterceptor {
 
         switch (compensableMethodContext.getMethodRole(isTransactionActive)) {
             case ROOT:
+                //根方法
                 return rootMethodProceed(compensableMethodContext);
             case PROVIDER:
+                //一般方法
                 return providerMethodProceed(compensableMethodContext);
             default:
                 return pjp.proceed();
@@ -72,26 +76,30 @@ public class CompensableTransactionInterceptor {
         allDelayCancelExceptions.addAll(Arrays.asList(compensableMethodContext.getAnnotation().delayCancelExceptions()));
 
         try {
-
+            //开启事务
             transaction = transactionManager.begin(compensableMethodContext.getUniqueIdentity());
 
             try {
+                //放行方法
                 returnValue = compensableMethodContext.proceed();
             } catch (Throwable tryingException) {
 
                 if (!isDelayCancelException(tryingException, allDelayCancelExceptions)) {
 
                     logger.warn(String.format("compensable transaction trying failed. transaction content:%s", JSON.toJSONString(transaction)), tryingException);
-
+                    //报错回滚
                     transactionManager.rollback(asyncCancel);
                 }
 
                 throw tryingException;
             }
 
+            //提交事务
             transactionManager.commit(asyncConfirm);
 
+
         } finally {
+            //清空内存中事务数据
             transactionManager.cleanAfterCompletion(transaction);
         }
 

@@ -52,13 +52,19 @@ public class CompensableMethodContext {
         return method;
     }
 
+    /**
+     * 获取当前事务唯一约束
+     * @return
+     */
     public Object getUniqueIdentity() {
+        //获取方法上的所有注解
         Annotation[][] annotations = this.getMethod().getParameterAnnotations();
 
         for (int i = 0; i < annotations.length; i++) {
             for (Annotation annotation : annotations[i]) {
+                //获取对应注解
                 if (annotation.annotationType().equals(UniqueIdentity.class)) {
-
+                    //获取注解上的参数
                     Object[] params = pjp.getArgs();
                     Object unqiueIdentity = params[i];
 

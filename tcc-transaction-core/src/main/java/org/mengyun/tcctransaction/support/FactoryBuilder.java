@@ -20,14 +20,17 @@ public final class FactoryBuilder {
 
     public static <T> SingeltonFactory<T> factoryOf(Class<T> clazz) {
 
+        //判断类工厂map是否存在当前所需类
         if (!classFactoryMap.containsKey(clazz)) {
-
+            //循环工厂列表
             for (BeanFactory beanFactory : beanFactories) {
+                //判断是否是当前所需类的工厂
                 if (beanFactory.isFactoryOf(clazz)) {
+                    //找到对应工厂类 如果不存在放入map
                     classFactoryMap.putIfAbsent(clazz, new SingeltonFactory<T>(clazz, beanFactory.getBean(clazz)));
                 }
             }
-
+            //不包含直接放入
             if (!classFactoryMap.containsKey(clazz)) {
                 classFactoryMap.putIfAbsent(clazz, new SingeltonFactory<T>(clazz));
             }

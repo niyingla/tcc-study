@@ -44,6 +44,13 @@ public class ReflectionUtils {
         return oldValue;
     }
 
+    /**
+     * 获取目标方法的类class
+     * @param aClass
+     * @param methodName
+     * @param parameterTypes
+     * @return
+     */
     public static Class getDeclaringType(Class aClass, String methodName, Class<?>[] parameterTypes) {
 
         Method method = null;
@@ -69,6 +76,7 @@ public class ReflectionUtils {
 
             findClass = findClass.getSuperclass();
 
+            //没有 继续从没类递归查询
         } while (!findClass.equals(Object.class));
 
         return aClass;

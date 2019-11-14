@@ -36,9 +36,16 @@ public class TransactionManager {
 
     }
 
+    /**
+     * 开启事务
+     * @param uniqueIdentify
+     * @return
+     */
     public Transaction begin(Object uniqueIdentify) {
         Transaction transaction = new Transaction(uniqueIdentify,TransactionType.ROOT);
+        //数据库创建事务
         transactionRepository.create(transaction);
+        //内存记录事务
         registerTransaction(transaction);
         return transaction;
     }
@@ -76,9 +83,9 @@ public class TransactionManager {
         final Transaction transaction = getCurrentTransaction();
 
         transaction.changeStatus(TransactionStatus.CONFIRMING);
-
+        //修改事务状态
         transactionRepository.update(transaction);
-
+        //是否异步提交
         if (asyncCommit) {
             try {
                 Long statTime = System.currentTimeMillis();
@@ -95,6 +102,7 @@ public class TransactionManager {
                 throw new ConfirmingException(commitException);
             }
         } else {
+            //直接提交
             commitTransaction(transaction);
         }
     }
@@ -147,6 +155,10 @@ public class TransactionManager {
         }
     }
 
+    /**
+     * 获取当前事务
+     * @return
+     */
     public Transaction getCurrentTransaction() {
         if (isTransactionActive()) {
             return CURRENT.get().peek();
@@ -154,12 +166,20 @@ public class TransactionManager {
         return null;
     }
 
+    /**
+     * 是否有活着的事务
+     * @return
+     */
     public boolean isTransactionActive() {
         Deque<Transaction> transactions = CURRENT.get();
         return transactions != null && !transactions.isEmpty();
     }
 
 
+    /**
+     * 注册到当前双向队列
+     * @param transaction
+     */
     private void registerTransaction(Transaction transaction) {
 
         if (CURRENT.get() == null) {
@@ -169,6 +189,11 @@ public class TransactionManager {
         CURRENT.get().push(transaction);
     }
 
+    /**
+     *
+     * 事务完成清空数据
+     * @param transaction
+     */
     public void cleanAfterCompletion(Transaction transaction) {
         if (isTransactionActive() && transaction != null) {
             Transaction currentTransaction = getCurrentTransaction();
