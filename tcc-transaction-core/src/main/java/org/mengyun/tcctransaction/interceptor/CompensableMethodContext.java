@@ -89,6 +89,14 @@ public class CompensableMethodContext {
         return method;
     }
 
+    /**
+     * 	事务传播性，包含REQUIRED（必须存在事务，不存在，创建），
+     * 	SUPPORTS（有事务的话在事务内运行），
+     * 	MANDATORY（必须存在事务），
+     * 	REQUIRES_NEW（不管是否存在，创建新的事务）
+     * @param isTransactionActive
+     * @return
+     */
 
     public MethodRole getMethodRole(boolean isTransactionActive) {
         if ((propagation.equals(Propagation.REQUIRED) && !isTransactionActive && transactionContext == null) ||

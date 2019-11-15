@@ -40,7 +40,8 @@ public class CompensableTransactionInterceptor {
     public Object interceptCompensableMethod(ProceedingJoinPoint pjp) throws Throwable {
 
         //创建注解方法上下文
-        CompensableMethodContext compensableMethodContext = new CompensableMethodContext(pjp);
+      //获取上下文，如果是Root，不会存在上下文，Transaction都还没创建
+      CompensableMethodContext compensableMethodContext = new CompensableMethodContext(pjp);
 
         logger.info("拦截器拦截记录：" + compensableMethodContext);
 
@@ -52,12 +53,13 @@ public class CompensableTransactionInterceptor {
 
         switch (compensableMethodContext.getMethodRole(isTransactionActive)) {
             case ROOT:
-                //根方法
+                //根方法 Root对应主事务入口方法
                 return rootMethodProceed(compensableMethodContext);
             case PROVIDER:
-                //一般方法
+                //一般方法 Provider对应远程提供者方的方法
                 return providerMethodProceed(compensableMethodContext);
             default:
+                //Normal是主事务内消费者方的方法(是代理方法)
                 return pjp.proceed();
         }
     }
@@ -122,7 +124,9 @@ public class CompensableTransactionInterceptor {
 
             switch (TransactionStatus.valueOf(compensableMethodContext.getTransactionContext().getStatus())) {
                 case TRYING:
+                    //使用transactionContext创建分支事务
                     transaction = transactionManager.propagationNewBegin(compensableMethodContext.getTransactionContext());
+                    //执行被切方法逻辑
                     return compensableMethodContext.proceed();
                 case CONFIRMING:
                     try {
