@@ -100,8 +100,6 @@ public class CompensableTransactionInterceptor {
 
             //提交事务
             transactionManager.commit(asyncConfirm);
-
-
         } finally {
             //清空内存中事务数据
             transactionManager.cleanAfterCompletion(transaction);

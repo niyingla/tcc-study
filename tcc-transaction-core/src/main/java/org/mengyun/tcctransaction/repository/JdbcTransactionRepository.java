@@ -101,6 +101,7 @@ public class JdbcTransactionRepository extends CachableTransactionRepository {
         }
     }
 
+    @Override
     protected int doUpdate(Transaction transaction) {
         Connection connection = null;
         PreparedStatement stmt = null;
