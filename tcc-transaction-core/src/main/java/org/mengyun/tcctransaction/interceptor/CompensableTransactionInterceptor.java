@@ -24,23 +24,25 @@ import java.util.Set;
 public class CompensableTransactionInterceptor {
 
     static final Logger logger = Logger.getLogger(CompensableTransactionInterceptor.class.getSimpleName());
-
     private TransactionManager transactionManager;
-
     private Set<Class<? extends Exception>> delayCancelExceptions = new HashSet<Class<? extends Exception>>();
 
     public void setTransactionManager(TransactionManager transactionManager) {
         this.transactionManager = transactionManager;
     }
 
+
     public void setDelayCancelExceptions(Set<Class<? extends Exception>> delayCancelExceptions) {
         this.delayCancelExceptions.addAll(delayCancelExceptions);
     }
+
 
     public Object interceptCompensableMethod(ProceedingJoinPoint pjp) throws Throwable {
 
         //创建注解方法上下文
         CompensableMethodContext compensableMethodContext = new CompensableMethodContext(pjp);
+
+        logger.info("拦截器拦截记录：" + compensableMethodContext);
 
         boolean isTransactionActive = transactionManager.isTransactionActive();
 
@@ -106,6 +108,7 @@ public class CompensableTransactionInterceptor {
         return returnValue;
     }
 
+
     private Object providerMethodProceed(CompensableMethodContext compensableMethodContext) throws Throwable {
 
         Transaction transaction = null;
@@ -149,6 +152,7 @@ public class CompensableTransactionInterceptor {
         return ReflectionUtils.getNullValue(method.getReturnType());
     }
 
+
     private boolean isDelayCancelException(Throwable throwable, Set<Class<? extends Exception>> delayCancelExceptions) {
 
         if (delayCancelExceptions != null) {
@@ -165,5 +169,6 @@ public class CompensableTransactionInterceptor {
 
         return false;
     }
+
 
 }

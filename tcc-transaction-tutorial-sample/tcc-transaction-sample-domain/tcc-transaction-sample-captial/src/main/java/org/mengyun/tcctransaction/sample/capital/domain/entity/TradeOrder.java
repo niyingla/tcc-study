@@ -67,4 +67,17 @@ public class TradeOrder {
     public void updateVersion() {
         this.version = version + 1;
     }
+
+    @Override
+    public String toString() {
+        return "TradeOrder{" +
+            "id=" + id +
+            ", selfUserId=" + selfUserId +
+            ", oppositeUserId=" + oppositeUserId +
+            ", merchantOrderNo='" + merchantOrderNo + '\'' +
+            ", amount=" + amount +
+            ", status='" + status + '\'' +
+            ", version=" + version +
+            '}';
+    }
 }

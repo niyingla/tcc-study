@@ -23,7 +23,6 @@ public class CapitalTradeOrderServiceImpl implements CapitalTradeOrderService {
 
     @Autowired
     CapitalAccountRepository capitalAccountRepository;
-
     @Autowired
     TradeOrderRepository tradeOrderRepository;
 
@@ -53,6 +52,7 @@ public class CapitalTradeOrderServiceImpl implements CapitalTradeOrderService {
             );
 
             try {
+                System.out.println("调用交易订单保存" + tradeOrder);
                 tradeOrderRepository.insert(tradeOrder);
 
                 CapitalAccount transferFromAccount = capitalAccountRepository.findByUserId(tradeOrderDto.getSelfUserId());
@@ -67,6 +67,7 @@ public class CapitalTradeOrderServiceImpl implements CapitalTradeOrderService {
 
         return "success";
     }
+
 
     @Transactional
     public void confirmRecord(TransactionContext transactionContext, CapitalTradeOrderDto tradeOrderDto) {
@@ -94,6 +95,7 @@ public class CapitalTradeOrderServiceImpl implements CapitalTradeOrderService {
         }
     }
 
+
     @Transactional
     public void cancelRecord(TransactionContext transactionContext, CapitalTradeOrderDto tradeOrderDto) {
 
@@ -119,4 +121,6 @@ public class CapitalTradeOrderServiceImpl implements CapitalTradeOrderService {
             capitalAccountRepository.save(capitalAccount);
         }
     }
+
+
 }

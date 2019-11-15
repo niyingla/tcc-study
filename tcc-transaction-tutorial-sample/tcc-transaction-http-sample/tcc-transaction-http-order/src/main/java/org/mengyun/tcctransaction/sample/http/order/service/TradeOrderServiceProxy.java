@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
+ * 此方法会被调用两次
  * Created by changming.xie on 4/19/17.
  */
 @Component

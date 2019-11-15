@@ -106,5 +106,14 @@ public class CompensableMethodContext {
         return this.pjp.proceed();
     }
 
-
+    @Override
+    public String toString() {
+        return "CompensableMethodContext{" +
+            "pjp=" + pjp.getSignature().getDeclaringTypeName() +
+            ", method=" + method.getName() +
+            ", compensable=" + compensable +
+            ", propagation=" + propagation +
+            ", transactionContext=" + transactionContext +
+            '}';
+    }
 }

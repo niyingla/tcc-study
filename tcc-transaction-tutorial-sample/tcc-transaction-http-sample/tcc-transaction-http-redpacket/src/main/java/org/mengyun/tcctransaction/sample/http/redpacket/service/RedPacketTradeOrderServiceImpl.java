@@ -54,6 +54,8 @@ public class RedPacketTradeOrderServiceImpl implements RedPacketTradeOrderServic
             );
 
             try {
+                System.out.println("调用交易订单保存" + tradeOrder);
+
                 tradeOrderRepository.insert(tradeOrder);
 
                 RedPacketAccount transferFromAccount = redPacketAccountRepository.findByUserId(tradeOrderDto.getSelfUserId());
