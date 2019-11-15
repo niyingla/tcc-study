@@ -44,8 +44,8 @@ public class PaymentServiceImpl {
             }
         }
 
-        String result = tradeOrderServiceProxy.record(null, buildCapitalTradeOrderDto(order));
-        String result2 = tradeOrderServiceProxy.record(null, buildRedPacketTradeOrderDto(order));
+        String result = tradeOrderServiceProxy.record1(null, buildCapitalTradeOrderDto(order));
+        String result2 = tradeOrderServiceProxy.record2(null, buildRedPacketTradeOrderDto(order));
     }
 
     public void confirmMakePayment(Order order, BigDecimal redPacketPayAmount, BigDecimal capitalPayAmount) {

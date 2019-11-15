@@ -8,6 +8,7 @@ import org.mengyun.tcctransaction.api.TransactionXid;
 import java.io.Serializable;
 
 /**
+ * 参与者信息
  * Created by changmingxie on 10/27/15.
  */
 public class Participant implements Serializable {
@@ -49,6 +50,9 @@ public class Participant implements Serializable {
         terminator.invoke(new TransactionContext(xid, TransactionStatus.CANCELLING.getId()), cancelInvocationContext, transactionContextEditorClass);
     }
 
+    /**
+     * try 方法完成后调用
+     */
     public void commit() {
         terminator.invoke(new TransactionContext(xid, TransactionStatus.CONFIRMING.getId()), confirmInvocationContext, transactionContextEditorClass);
     }

@@ -27,13 +27,26 @@ public class TradeOrderServiceProxy {
     /*the propagation need set Propagation.SUPPORTS,otherwise the recover doesn't work,
       The default value is Propagation.REQUIRED, which means will begin new transaction when recover.
     */
-    @Compensable(propagation = Propagation.SUPPORTS, confirmMethod = "record", cancelMethod = "record", transactionContextEditor = MethodTransactionContextEditor.class)
-    public String record(TransactionContext transactionContext, CapitalTradeOrderDto tradeOrderDto) {
+
+    /**
+     * 分支实物
+     * @param transactionContext
+     * @param tradeOrderDto
+     * @return
+     */
+    @Compensable(propagation = Propagation.SUPPORTS, confirmMethod = "record1", cancelMethod = "record1", transactionContextEditor = MethodTransactionContextEditor.class)
+    public String record1(TransactionContext transactionContext, CapitalTradeOrderDto tradeOrderDto) {
         return capitalTradeOrderService.record(transactionContext, tradeOrderDto);
     }
 
-    @Compensable(propagation = Propagation.SUPPORTS, confirmMethod = "record", cancelMethod = "record", transactionContextEditor = MethodTransactionContextEditor.class)
-    public String record(TransactionContext transactionContext, RedPacketTradeOrderDto tradeOrderDto) {
+    /**
+     * 分支实物
+     * @param transactionContext
+     * @param tradeOrderDto
+     * @return
+     */
+    @Compensable(propagation = Propagation.SUPPORTS, confirmMethod = "record2", cancelMethod = "record2", transactionContextEditor = MethodTransactionContextEditor.class)
+    public String record2(TransactionContext transactionContext, RedPacketTradeOrderDto tradeOrderDto) {
         return redPacketTradeOrderService.record(transactionContext, tradeOrderDto);
     }
 }
