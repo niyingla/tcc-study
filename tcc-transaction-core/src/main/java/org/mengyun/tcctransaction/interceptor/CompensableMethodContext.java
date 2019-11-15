@@ -2,10 +2,7 @@ package org.mengyun.tcctransaction.interceptor;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.mengyun.tcctransaction.api.Compensable;
-import org.mengyun.tcctransaction.api.Propagation;
-import org.mengyun.tcctransaction.api.TransactionContext;
-import org.mengyun.tcctransaction.api.UniqueIdentity;
+import org.mengyun.tcctransaction.api.*;
 import org.mengyun.tcctransaction.common.MethodRole;
 import org.mengyun.tcctransaction.support.FactoryBuilder;
 
@@ -18,13 +15,9 @@ import java.lang.reflect.Method;
 public class CompensableMethodContext {
 
     ProceedingJoinPoint pjp = null;
-
     Method method = null;
-
     Compensable compensable = null;
-
     Propagation propagation = null;
-
     TransactionContext transactionContext = null;
 
     public CompensableMethodContext(ProceedingJoinPoint pjp) {
@@ -32,25 +25,31 @@ public class CompensableMethodContext {
         this.method = getCompensableMethod();
         this.compensable = method.getAnnotation(Compensable.class);
         this.propagation = compensable.propagation();
-        this.transactionContext = FactoryBuilder.factoryOf(compensable.transactionContextEditor()).getInstance().get(pjp.getTarget(), method, pjp.getArgs());
+        FactoryBuilder.SingeltonFactory<? extends TransactionContextEditor> singletonFactory = FactoryBuilder.factoryOf(compensable.transactionContextEditor());
+        this.transactionContext = singletonFactory .getInstance().get(pjp.getTarget(), method, pjp.getArgs());
 
     }
+
 
     public Compensable getAnnotation() {
         return compensable;
     }
 
+
     public Propagation getPropagation() {
         return propagation;
     }
+
 
     public TransactionContext getTransactionContext() {
         return transactionContext;
     }
 
+
     public Method getMethod() {
         return method;
     }
+
 
     /**
      * 获取当前事务唯一约束
@@ -90,6 +89,7 @@ public class CompensableMethodContext {
         return method;
     }
 
+
     public MethodRole getMethodRole(boolean isTransactionActive) {
         if ((propagation.equals(Propagation.REQUIRED) && !isTransactionActive && transactionContext == null) ||
                 propagation.equals(Propagation.REQUIRES_NEW)) {
@@ -101,7 +101,10 @@ public class CompensableMethodContext {
         }
     }
 
+
     public Object proceed() throws Throwable {
         return this.pjp.proceed();
     }
+
+
 }

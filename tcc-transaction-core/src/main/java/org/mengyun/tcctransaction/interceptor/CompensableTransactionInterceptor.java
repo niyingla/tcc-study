@@ -125,7 +125,7 @@ public class CompensableTransactionInterceptor {
                     try {
                         transaction = transactionManager.propagationExistBegin(compensableMethodContext.getTransactionContext());
                         transactionManager.commit(asyncConfirm);
-                    } catch (NoExistedTransactionException excepton) {
+                    } catch (NoExistedTransactionException exception) {
                         //the transaction has been commit,ignore it.
                     }
                     break;
